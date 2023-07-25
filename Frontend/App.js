@@ -1,10 +1,10 @@
 import React from "react";
-import ClozeQuestion from "./src/ClozeQuestion";
+import Body from "./src/Component/Body";
 
 const App = () => {
   return (
     <div>
-      <ClozeQuestion />
+      <Body />
     </div>
   );
 };
