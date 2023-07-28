@@ -21,6 +21,12 @@ const Preview = () => {
   return (
     <div className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-4">Form Preview</h1>
+      {form.headerName && <h2 className="font-bold text-xl mb-4">{form.headerName}</h2>}
+      {form.HeaderImg && 
+        <div className="header-image mb-4">
+          <img src={form.HeaderImg} alt="Header" />
+        </div>
+      }
       <div className="preview-container">
         {form.ComprehensiveQuestion.map((comprehensiveQues, index) => (
           <div key={index} className="comprehensive-question bg-gray-200 p-4 mb-4 rounded-lg">
