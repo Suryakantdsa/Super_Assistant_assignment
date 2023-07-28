@@ -9,7 +9,7 @@ const SubmitAndPreview = () => {
         console.log(form)
         try {
             const response = await fetch(
-                "http://localhost:5000/",
+                "https://superassistant.onrender.com/",
                 {
                   method: "post",
                   body: form,
