@@ -18,7 +18,7 @@ const ComprehensiveQuestion = () => {
         question: newQuestion,
         options: newOptions.filter((option) => option.trim() !== ""),
       };
-      console.log(questions);
+      // console.log(questions);
       setQuestions([...questions, newQuestionObject]);
       setNewQuestion("");
       setNewOptions(["", "", "", ""]);
@@ -28,7 +28,7 @@ const ComprehensiveQuestion = () => {
     setLoading(true)
     try {
       const cdnUrl = await useCloudinaryUpload(image);
-      console.log(cdnUrl);
+      // console.log(cdnUrl);
       dispatch(
         addComprehensiveQuestion({
           para: {

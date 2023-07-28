@@ -4,7 +4,7 @@ import CategorizeQuestion from "./CategorizeQuestion";
 import ComprehensiveQuestion from "./ComprehensiveQuestion";
 
 const Questions = ({ questions }) => {
-  console.log(questions);
+  // console.log(questions);
   if (questions.length < 0) return null;
 
   return (

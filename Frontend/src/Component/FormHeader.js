@@ -18,7 +18,6 @@ const FormHeader = () => {
     const file = e.target.files[0];
     try {
       const cdnUrl = await useCloudinaryUpload(file);
-      console.log(cdnUrl); 
       dispatch(addHeaderImg(cdnUrl))
       const reader = new FileReader();
       reader.onloadend = () => {

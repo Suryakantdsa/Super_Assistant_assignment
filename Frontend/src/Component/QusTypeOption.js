@@ -14,7 +14,6 @@ const QusTypeOption = () => {
     ]);
     setOption(false);
   }
-  console.log(questions.length>0)
   function handleChooseQustype() {
     setOption(true)
     setSubmit(true)

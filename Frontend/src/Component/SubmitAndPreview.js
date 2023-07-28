@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 const SubmitAndPreview = () => {
     const form=useSelector(store=>store.form)
     const uploadToMongodb=async()=>{
-        console.log(form)
+        // console.log(form)
         try {
             const response = await fetch(
                 "https://superassistant.onrender.com/",
@@ -16,7 +16,7 @@ const SubmitAndPreview = () => {
                 }
               );
             const result=await response.json()
-            console.log(result)
+            // console.log(result)
             alert("form data submitted to database 👍👍👍")
         } catch (error) {
             console.log(error)
