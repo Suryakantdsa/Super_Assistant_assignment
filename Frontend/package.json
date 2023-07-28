@@ -2,10 +2,9 @@
   "name": "frontend",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/bundle.js",
   "scripts": {
     "start": "parcel index.html",
-    "build": "parcel build index.js",
+    "build": "parcel build index.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Suryakant das",
