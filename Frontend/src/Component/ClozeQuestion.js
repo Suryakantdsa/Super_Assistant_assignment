@@ -1,9 +1,6 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import {
-  addClozeQuestion,
-  removeClozeQuestion,
-} from "../Store/Slice/formSlice";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addClozeQuestion } from "../Store/Slice/formSlice";
 
 const ClozeQuestion = () => {
   const [questionText, setQuestionText] = useState("");
@@ -17,9 +14,18 @@ const ClozeQuestion = () => {
       setNewAnswer("");
     }
   };
-
-  function handleRemoveQus() {
-    dispatch(removeClozeQuestion());
+  function handleSubmit(e) {
+    if (answers && questionText) {
+      dispatch(
+        addClozeQuestion({
+          questionText: questionText,
+          answers: answers,
+        })
+      );
+      alert("question data is added👍👍");
+    } else {
+      alert("All field is required 🚫");
+    }
   }
 
   const handleRemoveAnswer = (index) => {
@@ -88,15 +94,14 @@ const ClozeQuestion = () => {
               </li>
             ))}
           </ul>
+          <button
+            onClick={() => handleSubmit()}
+            className="mt-4 px-2 py-1 bg-red-500 hover:bg-green-600 text-white rounded-md"
+          >
+            Save 
+          </button>
         </div>
       )}
-     
-      <div
-        className="absolute font-bold py-0 top-0 right-0 px-1 rounded-sm  hover:bg-red-600  hover:text-white cursor-pointer"
-        onClick={handleRemoveQus}
-      >
-        <i className="fa-solid fa-times font-bold"></i>
-      </div>
     </div>
   );
 };

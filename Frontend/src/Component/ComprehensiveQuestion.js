@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addComprehensiveQuestion } from "../Store/Slice/formSlice";
+import { useCloudinaryUpload } from "../Helper/useCloudinaryUpload";
 
 const ComprehensiveQuestion = () => {
   const [content, setContent] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState("");
   const [newOptions, setNewOptions] = useState(["", "", "", ""]);
+  const dispatch=useDispatch()
 
   const handleAddQuestion = () => {
     if (newQuestion.trim() !== "") {
@@ -13,11 +17,28 @@ const ComprehensiveQuestion = () => {
         question: newQuestion,
         options: newOptions.filter((option) => option.trim() !== ""),
       };
-      console.log(questions)
+      console.log(questions);
       setQuestions([...questions, newQuestionObject]);
       setNewQuestion("");
       setNewOptions(["", "", "", ""]);
     }
+  };
+  const handleDispatchAction = async() => {
+    try {
+      const cdnUrl = await useCloudinaryUpload(image);
+      console.log(cdnUrl); 
+      dispatch(addComprehensiveQuestion({
+        para:{
+          content:content,
+          imgUrl:cdnUrl
+        },
+        questions:questions
+      }))
+      alert("question data is added👍👍");
+    } catch (error) {
+      console.log(error);
+    }
+    
   };
 
   const handleRemoveQuestion = (index) => {
@@ -122,6 +143,12 @@ const ComprehensiveQuestion = () => {
               </li>
             ))}
           </ul>
+          <button
+            onClick={() => handleDispatchAction()}
+            className="mt-4 px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-sm"
+          >
+            Done
+          </button>
         </div>
       )}
     </div>

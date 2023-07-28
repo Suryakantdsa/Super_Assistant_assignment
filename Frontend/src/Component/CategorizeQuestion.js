@@ -1,16 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addCategorizeQuestion } from "../Store/Slice/formSlice";
 
 const CategorizeQuestion = () => {
-  const [category1, setCategory1] = useState("");
-  const [category2, setCategory2] = useState("");
+  const [category, setCategory] = useState("");
+  const [matchingAnswer, setMatchingAnswer] = useState("");
   const [answers, setAnswers] = useState([]);
+  const dispatch = useDispatch();
+  
 
   const handleAddAnswer = () => {
-    console.log(answers)
-    if (category1.trim() !== "" && category2.trim() !== "") {
-      setAnswers([...answers, { category1, category2 }]);
-      setCategory1("");
-      setCategory2("");
+    if (category.trim() !== "" && matchingAnswer.trim() !== "") {
+      setAnswers([...answers, { category, matchingAnswer }]);
+      setCategory("");
+      setMatchingAnswer("");
+    } else {
+      alert("All fields are required");
     }
   };
 
@@ -19,32 +24,44 @@ const CategorizeQuestion = () => {
     setAnswers(updatedAnswers);
   };
 
+  const handleDispatchAction = () => {
+    answers.forEach((answer) => {
+      dispatch(
+        addCategorizeQuestion({
+          category: answer.category,
+          matchingAnswer: answer.matchingAnswer,
+        })
+      );
+    });
+    alert("Categorize question data is added to the store.");
+  };
+
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-4 mt-4">
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
         Categorize Type Question
       </h2>
       <div className="mb-4">
-        <label htmlFor="category1" className="text-lg font-semibold">
-          Category 1:
+        <label htmlFor="category" className="text-lg font-semibold">
+          Category:
         </label>
         <input
           type="text"
-          id="category1"
-          value={category1}
-          onChange={(e) => setCategory1(e.target.value)}
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
           className="w-full p-2 border rounded-lg"
         />
       </div>
       <div className="mb-4">
-        <label htmlFor="category2" className="text-lg font-semibold">
-          Category 2:
+        <label htmlFor="matchingAnswer" className="text-lg font-semibold">
+          Matching Answer:
         </label>
         <input
           type="text"
-          id="category2"
-          value={category2}
-          onChange={(e) => setCategory2(e.target.value)}
+          id="matchingAnswer"
+          value={matchingAnswer}
+          onChange={(e) => setMatchingAnswer(e.target.value)}
           className="w-full p-2 border rounded-lg"
         />
       </div>
@@ -62,7 +79,7 @@ const CategorizeQuestion = () => {
           <ul>
             {answers.map((answer, index) => (
               <li key={index} className="flex items-center">
-                <span>{answer.category1} - {answer.category2}</span>
+                <span>{answer.category} - {answer.matchingAnswer}</span>
                 <button
                   onClick={() => handleRemoveAnswer(index)}
                   className="ml-2 text-red-500 hover:text-red-600"
@@ -72,6 +89,14 @@ const CategorizeQuestion = () => {
               </li>
             ))}
           </ul>
+          <div className="mt-4">
+            <button
+              onClick={handleDispatchAction}
+              className="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg"
+            >
+              Save
+            </button>
+          </div>
         </div>
       )}
     </div>
