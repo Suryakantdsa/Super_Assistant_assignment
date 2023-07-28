@@ -1,15 +1,15 @@
 import ReactDOM from "react-dom/client";
 import React from "react";
-import App from "./app";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Preview from "./src/Component/Preiview";
 import { Provider } from "react-redux";
 import store from "./src/Store/store";
+import Body from "./src/Component/Body";
 
 const appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <Body />,
   },
   {
     path: "/preview",
