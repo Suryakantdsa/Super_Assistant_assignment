@@ -19,12 +19,12 @@ const Preview = () => {
     );
   }
   return (
-    <div className="container mx-auto py-8">
+    <div className="container max-w-md mx-auto bg-white rounded-lg shadow-lg p-4 mt-4">
       <h1 className="text-3xl font-bold mb-4">Form Preview</h1>
-      {form.headerName && <h2 className="font-bold text-xl mb-4">{form.headerName}</h2>}
+      {form.headerName && <h2 className="font-bold text-xl mb-4 text-center">{form.headerName}</h2>}
       {form.HeaderImg && 
-        <div className="header-image mb-4">
-          <img src={form.HeaderImg} alt="Header" />
+        <div className="header-image mb-4  ">
+          <img src={form.HeaderImg} alt="Header" className="h-32 w-full" />
         </div>
       }
       <div className="preview-container">

@@ -9,7 +9,8 @@ const ComprehensiveQuestion = () => {
   const [questions, setQuestions] = useState([]);
   const [newQuestion, setNewQuestion] = useState("");
   const [newOptions, setNewOptions] = useState(["", "", "", ""]);
-  const dispatch=useDispatch()
+  const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleAddQuestion = () => {
     if (newQuestion.trim() !== "") {
@@ -23,22 +24,27 @@ const ComprehensiveQuestion = () => {
       setNewOptions(["", "", "", ""]);
     }
   };
-  const handleDispatchAction = async() => {
+  const handleDispatchAction = async () => {
+    setLoading(true)
     try {
       const cdnUrl = await useCloudinaryUpload(image);
-      console.log(cdnUrl); 
-      dispatch(addComprehensiveQuestion({
-        para:{
-          content:content,
-          imgUrl:cdnUrl
-        },
-        questions:questions
-      }))
-      alert("question data is added👍👍");
+      console.log(cdnUrl);
+      dispatch(
+        addComprehensiveQuestion({
+          para: {
+            content: content,
+            imgUrl: cdnUrl,
+          },
+          questions: questions,
+        })
+      );
     } catch (error) {
       console.log(error);
     }
-    
+    finally{
+      setLoading(false)
+      alert("question data is added👍👍");
+    }
   };
 
   const handleRemoveQuestion = (index) => {
@@ -71,7 +77,7 @@ const ComprehensiveQuestion = () => {
       </div>
       <div className="mb-4">
         <label htmlFor="image" className="text-lg font-semibold">
-          Add Image:
+          Add question Image :
         </label>
         <input
           type="file"
@@ -143,12 +149,15 @@ const ComprehensiveQuestion = () => {
               </li>
             ))}
           </ul>
-          <button
-            onClick={() => handleDispatchAction()}
-            className="mt-4 px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-sm"
-          >
-            Done
-          </button>
+          <div>
+            <button
+              onClick={() => handleDispatchAction()}
+              className="mt-4 px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-sm"
+            >
+              Done
+            </button>
+            {isLoading &&<span className="ml-4 font-bold">Loading...</span>}
+          </div>
         </div>
       )}
     </div>
