@@ -19,12 +19,12 @@ const Body = () => {
             )
           )
         }
-
-        {/* <Category/>
-        <Cloze/>
-        <Comprehension/> */}
-        {/* <ClozeQuestion/> */}
-        {/* <ComprehensiveQuestion/> */}
+        {
+          AllQuestions.length>0 &&
+          <div className="flex max-w-xl my-6 mx-auto justify-center">
+            <button className='bg-blue-600 text-2xl text-white py-2 px-8 mr-4 ' onClick={()=>alert("Form data is uploaded sucessfully to database👍👍👍👍")}>Save</button>
+          </div>
+        }
     </div>
   )
 }
