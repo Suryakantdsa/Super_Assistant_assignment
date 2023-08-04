@@ -1,104 +1,74 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addCategorizeQuestion } from "../Store/Slice/formSlice";
+import {
+  addCatagories,
+  addDescription,
+} from "../Store/Slice/CategorizeQuestionSlice";
+import DraggableCategory from "./DraggableCategory.js";
 
 const CategorizeQuestion = () => {
-  const [category, setCategory] = useState("");
-  const [matchingAnswer, setMatchingAnswer] = useState("");
-  const [answers, setAnswers] = useState([]);
+  const data = useSelector((store) => store.CategorizeQuestion);
   const dispatch = useDispatch();
-  
+  const [newCategory, setNewCategory] = useState("");
 
-  const handleAddAnswer = () => {
-    if (category.trim() !== "" && matchingAnswer.trim() !== "") {
-      setAnswers([...answers, { category, matchingAnswer }]);
-      setCategory("");
-      setMatchingAnswer("");
-    } else {
-      alert("All fields are required");
+  const handleAddCategory = () => {
+    if (newCategory.trim() !== "") {
+      dispatch(addCatagories(newCategory));
+      setNewCategory("");
     }
   };
-
-  const handleRemoveAnswer = (index) => {
-    const updatedAnswers = answers.filter((_, i) => i !== index);
-    setAnswers(updatedAnswers);
-  };
-
-  const handleDispatchAction = () => {
-    answers.forEach((answer) => {
-      dispatch(
-        addCategorizeQuestion({
-          category: answer.category,
-          matchingAnswer: answer.matchingAnswer,
-        })
-      );
-    });
-    alert("Categorize question data is added to the store.");
+  const moveCategory = (fromIndex, toIndex) => {
+    const updatedCategories = [...data.categories];
+    const [category] = updatedCategories.splice(fromIndex, 1);
+    updatedCategories.splice(toIndex, 0, category);
+    dispatch(addCatagories(updatedCategories));
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-4 mt-4">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-        Categorize Type Question
-      </h2>
-      <div className="mb-4">
-        <label htmlFor="category" className="text-lg font-semibold">
-          Category:
-        </label>
-        <input
-          type="text"
-          id="category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="matchingAnswer" className="text-lg font-semibold">
-          Matching Answer:
-        </label>
-        <input
-          type="text"
-          id="matchingAnswer"
-          value={matchingAnswer}
-          onChange={(e) => setMatchingAnswer(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-        />
-      </div>
-      <div className="mb-4">
-        <button
-          onClick={handleAddAnswer}
-          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-        >
-          Add Answer
-        </button>
-      </div>
-      {answers.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold">Answers:</h3>
-          <ul>
-            {answers.map((answer, index) => (
-              <li key={index} className="flex items-center">
-                <span>{answer.category} - {answer.matchingAnswer}</span>
-                <button
-                  onClick={() => handleRemoveAnswer(index)}
-                  className="ml-2 text-red-500 hover:text-red-600"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-4">
-            <button
-              onClick={handleDispatchAction}
-              className="px-2 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg"
-            >
-              Save
-            </button>
-          </div>
+    <div>
+        <div className=" flex font-bold justify-between items-center mb-2">
+            <h1>Question 1</h1>
+        <h1 className="font-bold text-center bg-blue-400 text-white w-1/4 rounded-md py-1 cursor-pointer">Categorize{" "}
+        <i className="fa-regular fa-circle-question"></i>
+        </h1>
         </div>
-      )}
+      <input
+      className="w-5/6 px-2 py-1 border shadow mb-2"
+        type="text"
+        placeholder="Description (optional)"
+        onChange={(e) => {
+          dispatch(addDescription(e.target.value));
+        }}
+        value={data?.description}
+      />
+      <div>
+        <h1 className="font-bold mb-2">Categories</h1>
+        <ul>
+          {data.categories.map((category, index) => (
+            <DraggableCategory
+              key={index + category}
+              category={category}
+              index={index}
+              moveCategory={moveCategory}
+            />
+          ))}
+          <li className="border flex h-[2rem] justify-start items-center mb-2">
+            <input
+              type="text"
+              className="h-full w-1/2 px-2 border-none outline-none"
+              placeholder="Category optional"
+              onChange={(e) => setNewCategory(e.target.value)}
+              value={newCategory}
+            />
+            <button
+              onClick={handleAddCategory}
+              className="font-bold  px-2 h-full my-auto   border shadow bg-blue-600"
+            >
+             <i class="fa-solid fa-plus text-white font-bold text-lg"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

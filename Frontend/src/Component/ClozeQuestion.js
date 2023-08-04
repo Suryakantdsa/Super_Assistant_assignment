@@ -1,108 +1,111 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addClozeQuestion } from "../Store/Slice/formSlice";
+import {
+  addAnswers,
+  addCorrectAns,
+  addSentence,
+  addpreviewSentence,
+} from "../Store/Slice/ClozeQuestionSlice";
 
 const ClozeQuestion = () => {
-  const [questionText, setQuestionText] = useState("");
-  const [answers, setAnswers] = useState([]);
-  const [newAnswer, setNewAnswer] = useState("");
+  const [selectWord, setSelected] = useState("");
+  const [otherAns, setOtherans] = useState("");
+  const clozeQuestion = useSelector((store) => store.ClozeQuestion);
   const dispatch = useDispatch();
-
-  const handleAddAnswer = () => {
-    if (newAnswer.trim() !== "") {
-      setAnswers([...answers, newAnswer]);
-      setNewAnswer("");
-    }
+  const handleMouseUp = () => {
+    const inpuField = document.getElementById("sentence");
+    const selectedWord = inpuField.value.substring(
+      inpuField.selectionStart,
+      inpuField.selectionEnd
+    );
+    setSelected(selectedWord);
   };
-  function handleSubmit(e) {
-    if (answers && questionText) {
-      dispatch(
-        addClozeQuestion({
-          questionText: questionText,
-          answers: answers,
-        })
-      );
-      alert("question data is added👍👍");
-    } else {
-      alert("All field is required 🚫");
-    }
+  function handleUnderline() {
+    const preview = clozeQuestion.previewSentence.replace(
+      selectWord,
+      " __________ "
+    );
+    dispatch(addpreviewSentence(preview));
+    dispatch(addCorrectAns(selectWord));
   }
-
-  const handleRemoveAnswer = (index) => {
-    const updatedAnswers = answers.filter((_, i) => i !== index);
-    setAnswers(updatedAnswers);
-  };
-
-  // Function to render the question preview with blanks replaced by "@@"
-  const renderQuestionPreview = () => {
-    return questionText.replace(/@@/g, "_________");
-  };
-
   return (
-    <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-4 mt-4 relative">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
-        Cloze Type Question
-      </h2>
-      <div className="mb-4">
-        <label htmlFor="questionText" className="text-lg font-semibold">
-          Question:
+  
+      <div>
+        <h1 className="font-bold text-center ml-auto bg-blue-400 text-white w-1/4 rounded-md py-1 cursor-pointer">
+          Cloze <i className="fa-regular fa-circle-question"></i>
+        </h1>
+        <label htmlFor="preview" className="block my-2 font-bold">
+          Preview
         </label>
         <input
           type="text"
-          id="questionText"
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
-          placeholder='Add "@@" to make blank in question..'
-          className="w-full p-2 border rounded-lg"
+          id="preview"
+          value={clozeQuestion?.previewSentence}
+          className="w-full px-2 py-1 border shadow bg-white outline-none border-none"
+          disabled
         />
-        <p className="text-[12px] pt-2">
-          <span className="text-red-600 text-base font-bold px-2">*</span>
-          {renderQuestionPreview()}
-        </p>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="newAnswer" className="text-lg font-semibold">
-          Add Answer:
+        <label htmlFor="sentence" className="block my-2 font-bold">
+          Sentence
         </label>
-        <input
-          type="text"
-          id="newAnswer"
-          value={newAnswer}
-          onChange={(e) => setNewAnswer(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-        />
-        <button
-          onClick={handleAddAnswer}
-          className="mt-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
-        >
-          Add Answer
-        </button>
-      </div>
-      {answers.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold">Answers:</h3>
-          <ul>
-            {answers.map((answer, index) => (
-              <li key={index} className="flex items-center ">
-                <span>{answer}</span>
-                <button
-                  onClick={() => handleRemoveAnswer(index)}
-                  className="ml-2 text-red-500 hover:text-red-600"
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button
-            onClick={() => handleSubmit()}
-            className="mt-4 px-2 py-1 bg-red-500 hover:bg-green-600 text-white rounded-md"
-          >
-            Save 
+          <input
+            type="text"
+            id="sentence"
+            onMouseUp={handleMouseUp}
+            className="w-5/6 px-2 py-1 border shadow bg-white outline-none border-none"
+            value={clozeQuestion?.sentence}
+            placeholder="Underline the words here to convert them into blank"
+            onChange={(e) => {
+              dispatch(addSentence(e.target.value));
+              dispatch(addpreviewSentence(e.target.value));
+            }}
+          />
+          <button onClick={handleUnderline}>
+            <i className="ml-2 text-white p-[6px] bg-blue-600 fa-solid fa-underline"></i>
           </button>
         </div>
-      )}
-    </div>
+        <div className="mt-2">
+          <ul>
+            {clozeQuestion?.correctAns.map((option, index) => (
+              <li key={index}>
+                <label className="flex items-center p-1 w-1/3">
+                  <input type="checkbox" className="mr-2" checked />
+                  {option}
+                </label>
+              </li>
+            ))}
+            {clozeQuestion?.otherAns.map((option, index) => (
+              <li key={index}>
+                <label className="flex items-center p-1 w-1/3">
+                  <input type="checkbox" className="mr-2" />
+                  {option}
+                </label>
+              </li>
+            ))}
+            <li className="flex justify-between w-1/2 h-[2rem]">
+              <label className="flex items-center bg-white h-full  w-full">
+                <input type="checkbox" className="mr-2" />
+                <input
+                  type="text"
+                  placeholder="Option"
+                  value={otherAns}
+                  className="w-full outline-none border-none"
+                  onChange={(e) => setOtherans(e.target.value)}
+                />
+              </label>
+              <button
+                onClick={() => {
+                  dispatch(addAnswers(otherAns));
+                  setOtherans("");
+                }}
+              >
+                <i className="ml-2 text-white p-[6px] bg-blue-600 fa-solid fa-plus"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+ 
   );
 };
 
